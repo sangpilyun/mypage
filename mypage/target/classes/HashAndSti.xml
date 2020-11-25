@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HashAndStins">
+	<resultMap type="HashAndSti" id="HashAndStiResult">
+		<result property="stickerNum" column="stickerNum" />
+		<result property="hashName" column="hashName" />
+	</resultMap>
+	
+	<select id="list" parameterType="integer" resultMap="HashAndStiResult">
+	select * from HashAndSti where stickerNum=#{stickerNum} order by hashName 
+	</select>
+	
+	 <insert id="insert" parameterType="HashAndSti">
+	insert into HashAndSti values (#{stickerNum},#{hashName})
+	</insert>
+	
+	<select id="Searchlist" parameterType="HashAndSti" resultMap="HashAndStiResult">
+	select * from HashAndSti 
+		<if test="keyword!=null and keyword!=''">
+			where hashName like '%'||#{keyword}||'%'
+		</if>
+		  order by hashName
+	</select>
+	
+	<select id="getTotal" parameterType="HashAndSti" resultType="integer">
+		select count(*) from HashAndSti 
+		<if test="hashName!=null and hashName!=''">
+			where hashName like '%'||#{keyword}||'%'
+		</if>
+	</select>
+	
+</mapper>

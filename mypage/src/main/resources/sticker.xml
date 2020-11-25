@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="stickerns">
+	<resultMap type="sticker" id="stickerResult">
+		<result column="stickerNum" property="stickerNum"/>	
+		<result column="name" property="name"/>	
+		<result column="groupName" property="groupName"/>	
+	</resultMap>
+	<select id="stickerList" resultMap="stickerResult">
+		select * from sticker order by stickerNum
+	</select>
+	<select id="gNameList" resultMap="stickerResult">
+		select groupName from sticker group by groupName
+	</select>
+	<select id="getTotal" parameterType="sticker" resultType="integer">
+		select count(*) from sticker 
+		<if test="groupName!=null and groupName!=''">
+			where groupName like '%'||#{keyword}||'%'
+		</if>
+	</select>
+	<select id="list" parameterType="sticker"
+		resultMap="stickerResult">
+		select * from sticker 
+		<if test="keyword!=null and keyword!=''">
+			where groupName like '%'||#{keyword}||'%'
+		</if>
+		  order by groupName
+	</select>
+	<select id="opStickerList" resultMap="stickerResult">
+		select * from sticker where stickerNum in 
+		<foreach collection="list" item="stiList" open="(" separator="," close=")">
+			#{stiList}
+		</foreach>
+	</select>
+	<select id="select" parameterType="integer" resultType="string">
+	select name from sticker where stickerNum = #{stickerNum}
+	
+	</select>
+</mapper>

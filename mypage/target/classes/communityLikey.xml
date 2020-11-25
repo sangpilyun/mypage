@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="communityLikeyns">
+	<resultMap type="communityLikey" id="communityLikey">
+		<result property="memberNum" column="memberNum" />
+		<result property="communityNum" column="communityNum" />
+		
+	</resultMap>
+	
+	<select id="select" parameterType="hashmap" resultType="communityLikey">
+		select * from communityLikey
+		where memberNum = #{memberNum} and communityNum = #{communityNum}
+	</select>
+	<select id="likeyCnt" parameterType="int" resultType="int">
+		select count(*) from communityLikey
+		where communityNum = #{communityNum}
+	</select>
+	
+	<select id="isLikeyListDefault" parameterType="int" resultMap="communityLikey">
+		select cl.*
+		from COMMUNITYLIKEY cl,(select * from (select ROWNUM rn,community.* from 
+									(select * from COMMUNITY order by COMMUNITYNUM desc) community ) order by rn) c
+		where c.communityNum=cl.communityNum
+        	and rn between 1 and 5
+          and memberNum=#{memberNum}
+	</select>
+	
+	<insert id="insert" parameterType="hashmap">
+		insert into communityLikey
+		values (#{memberNum},#{communityNum})
+	</insert> 
+	
+	<delete id="delete" parameterType="hashmap">
+		delete from communityLikey
+		where memberNum = #{memberNum} and communityNum = #{communityNum}
+	</delete>
+	<delete id="deleteComm" parameterType="int">
+		delete from communityLikey
+		where communityNum=#{communityNum}
+	</delete>
+	
+
+</mapper>

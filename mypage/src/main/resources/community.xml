@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="communityns">
+	<resultMap type="community" id="community">
+		<result property="communityNum" column="communityNum" />
+		<result property="shareDate" column="shareDate" />
+		<result property="diaryNum" column="diaryNum" />
+		<result property="rn" column="rn" />
+		<result property="nickName" column="nickName" />
+		<result property="likeyCnt" column="likeyCnt" />
+		<collection property="diary" resultMap="diary"/>
+	</resultMap>
+	<resultMap type="diary" id="diary">
+		<result property="diaryNum" column="diaryNum" />
+		<result property="subject" column="subject" />
+		<result property="regDate" column="regDate" />
+		<result property="updateDate" column="updateDate" />
+		<result property="del" column="del" />
+		<result property="diaryCataNum" column="diaryCataNum" />
+		<result property="memberNum" column="memberNum" />
+	</resultMap>
+	
+
+	<select id="select" parameterType="int" resultMap="community">
+		select d.*,c.* from diary d, community c 
+		where d.DIARYNUM = c.DIARYNUM
+  			and communityNum=#{communityNum}
+	</select>
+	<select id="communityChk" parameterType="int" resultType="community" >
+		select * from community
+		where diaryNum=#{diaryNum}
+	</select>
+	
+	
+	<select id="listDefault" resultMap="community">
+		select d.*,c.*,m.nickName,nvl(likeyCnt,0) likeyCnt
+		from diary d,member m
+			,(select * from (select ROWNUM rn,community.* from 
+									(select * from COMMUNITY order by COMMUNITYNUM desc) community ) order by rn) c
+			,(select communityNum,count(*) likeyCnt from communitylikey group by communityNum) cl
+		where d.DIARYNUM=c.DIARYNUM
+			and c.communityNum=cl.communityNum(+)
+			and d.memberNum=m.memberNum 
+        	and rn between 1 and 5
+	</select>
+
+	<select id="addList" parameterType="int" resultMap="community">
+		select d.*,c.*,m.nickName,nvl(likeyCnt,0) likeyCnt
+		from diary d,member m
+			,(select * from (select ROWNUM rn,community.* from 
+									(select * from COMMUNITY order by COMMUNITYNUM desc) community ) order by rn) c
+			,(select communityNum,count(*) likeyCnt from communitylikey group by communityNum) cl
+		where d.DIARYNUM=c.DIARYNUM
+			and c.communityNum=cl.communityNum(+)
+			and d.memberNum=m.memberNum  
+			and rn between #{startNum} and #{startNum} +4
+		
+	</select>
+	
+	<select id="selectListDefault" parameterType="int" resultMap="community">
+		select comm.*,m.nickName,nvl(likeyCnt,0) likeyCnt
+		from member m
+    		,(select * from (select ROWNUM rn,com.* from (	select d.*,c.communityNum,c.sharedate from diary d, community c
+        	                                          		where d.DIARYNUM = c.DIARYNUM and MEMBERNUM=#{memberNum}
+            	                                      		order by COMMUNITYNUM desc) com)
+      		  order by rn) comm
+    		,(select communityNum,count(*) likeyCnt from communitylikey group by communityNum) cl
+		where comm.communityNum=cl.communityNum(+)
+			and comm.memberNum=m.memberNum 
+	</select>
+	
+	<select id="sharedCount" parameterType="int" resultType="int">
+		select count(*) from community c, diary d
+		where c.DIARYNUM = d.DIARYNUM
+  			and memberNum = #{memberNum}
+	</select>
+	
+	<select id="myLikeyListDefault" parameterType="int" resultMap="community">
+		select comm.*,m.nickName,nvl(likeyCnt,0) likeyCnt
+		from member m
+    		,(select * from (select ROWNUM rn,com.* from (select d.*,c.communityNum,c.sharedate from diary d, community c
+		                                                  where d.DIARYNUM = c.DIARYNUM and c.COMMUNITYNUM in ( select COMMUNITYNUM from COMMUNITYLIKEY 
+		                                                                                                        where memberNum = #{memberNum})
+		                                                  order by COMMUNITYNUM desc) com)
+		      order by rn) comm
+		    ,(select communityNum,count(*) likeyCnt from communitylikey group by communityNum) cl
+		where comm.communityNum=cl.communityNum(+)
+			and comm.memberNum=m.memberNum 
+	</select>
+	
+	<insert id="insertCommunity" parameterType="hashmap">
+		<selectKey keyProperty="communityNum" order="BEFORE" resultType="int">
+			select nvl(max(communityNum),0)+1 communityNum from community
+		</selectKey>
+		insert into community values (#{communityNum},sysdate,#{diaryNum})
+		
+	</insert>
+	
+	<delete id="deleteCommunity" parameterType="int">
+		delete from community 
+		where communityNum = #{communityNum}
+	</delete>
+</mapper>

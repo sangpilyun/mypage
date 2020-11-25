@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias alias="member" type="com.ch.mypage.model.Member" />
+		<typeAlias alias="notice" type="com.ch.mypage.model.Notice" />
+		<typeAlias alias="diary" type="com.ch.mypage.model.Diary" />
+		<typeAlias alias="diaryCatagory" type="com.ch.mypage.model.DiaryCatagory" />
+		<typeAlias alias="account" type="com.ch.mypage.model.Account" />
+		<typeAlias alias="accountbook" type="com.ch.mypage.model.AccountBook" />
+		<typeAlias alias="sticker" type="com.ch.mypage.model.Sticker" />
+		<typeAlias alias="memAndCata" type="com.ch.mypage.model.MemAndCata" />
+		<typeAlias alias="community" type="com.ch.mypage.model.Community" />
+		<typeAlias alias="communityLikey" type="com.ch.mypage.model.CommunityLikey" />
+		<typeAlias alias="communityComments" type="com.ch.mypage.model.CommunityComments" />
+		<typeAlias alias="follow" type="com.ch.mypage.model.Follow" />
+		<typeAlias alias="hashAndComm" type="com.ch.mypage.model.HashAndComm" />
+		<typeAlias alias="hashtag" type="com.ch.mypage.model.Hashtag"/>
+		<typeAlias alias="objectPosition" type="com.ch.mypage.model.ObjectPosition"/>
+		<typeAlias alias="textbox" type="com.ch.mypage.model.Textbox"/>
+		<typeAlias alias="HashAndSti"
+			type="com.ch.mypage.model.HashAndSti" />
+	</typeAliases>
+	<mappers>
+		<mapper resource="member.xml" />
+		<mapper resource="notice.xml" />
+		<mapper resource="diary.xml" />
+		<mapper resource="diaryCatagory.xml" />
+		<mapper resource="account.xml" />
+		<mapper resource="accountbook.xml" />
+		<mapper resource="sticker.xml" />
+		<mapper resource="memAndCata.xml" />
+		<mapper resource="community.xml" />
+		<mapper resource="communityLikey.xml" />
+		<mapper resource="communityComments.xml" />
+		<mapper resource="follow.xml" />
+		<mapper resource="hashAndComm.xml" />
+		<mapper	resource="hashtag.xml" />
+		<mapper	resource="objectPosition.xml" />
+		<mapper	resource="textbox.xml" />
+		<mapper resource="HashAndSti.xml" />
+	</mappers>
+</configuration>
